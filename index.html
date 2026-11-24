@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1f3a5f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>حضور الشباب</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;touch-action:manipulation;overscroll-behavior:none}
+body{font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;font-size:18px;background:#f3f5f9;color:#14202e}
+#app{display:flex;flex-direction:column;height:100%;max-width:640px;margin:0 auto;background:#f3f5f9}
+header{background:#1f3a5f;color:#fff;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));font-size:22px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+header small{font-size:14px;font-weight:400;opacity:.85}
+main{flex:1;overflow-y:auto;padding:12px 12px 24px}
+nav{display:flex;background:#fff;border-top:1px solid #d5dbe5;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:10px 2px 8px;font:inherit;font-size:14px;color:#6a7788;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button span{font-size:26px;line-height:1}
+nav button.on{color:#1f3a5f;font-weight:700}
+.card{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.row{display:flex;align-items:center;gap:8px}
+.grow{flex:1;min-width:0}
+.name{font-weight:700;font-size:19px}
+.sub{font-size:15px;color:#6a7788}
+input,select,textarea{font:inherit;font-size:18px;width:100%;padding:12px;border:1px solid #c5cdd9;border-radius:10px;background:#fff;color:inherit}
+textarea{min-height:110px}
+label{display:block;font-size:15px;color:#6a7788;margin:10px 0 4px}
+.btn{border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:700;font-size:18px;background:#1f3a5f;color:#fff}
+.btn.sec{background:#e3e9f2;color:#1f3a5f}
+.btn.red{background:#c0392b}
+.btn.green{background:#1e8e4e}
+.btn.block{display:block;width:100%;margin-top:10px;text-align:center;text-decoration:none}
+.seg{display:flex;gap:6px;margin-top:8px}
+.seg button{flex:1;border:2px solid #d5dbe5;background:#fff;border-radius:12px;padding:12px 0;font:inherit;font-size:17px;font-weight:700;color:#6a7788}
+.seg button.p{background:#1e8e4e;border-color:#1e8e4e;color:#fff}
+.seg button.a{background:#c0392b;border-color:#c0392b;color:#fff}
+.seg button.e{background:#d99a1c;border-color:#d99a1c;color:#fff}
+.stats{display:flex;gap:8px;margin-bottom:10px}
+.stats div{flex:1;background:#fff;border-radius:12px;padding:10px 4px;text-align:center;font-size:14px;color:#6a7788;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.stats b{display:block;font-size:26px;color:#14202e}
+.badge{display:inline-block;background:#fde8e5;color:#c0392b;border-radius:20px;padding:2px 10px;font-size:14px;font-weight:700}
+.badge.g{background:#e0f3e8;color:#1e8e4e}
+.circ{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;border:0;background:#e3e9f2}
+.circ.wa{background:#d9f5e3}
+.fab{position:fixed;bottom:calc(86px + env(safe-area-inset-bottom));left:16px;width:62px;height:62px;border-radius:50%;border:0;background:#1f3a5f;color:#fff;font-size:34px;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:5}
+.sheet>div{background:#f3f5f9;width:100%;max-width:640px;max-height:92%;overflow-y:auto;border-radius:20px 20px 0 0;padding:16px}
+h3{margin:4px 0 10px;font-size:21px}
+.empty{text-align:center;color:#6a7788;padding:40px 16px}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#14202e;color:#fff;padding:10px 18px;border-radius:20px;font-size:16px;z-index:9}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div>حضور الشباب <small id="hsub"></small></div></header>
+<main id="main"></main>
+<nav id="nav"></nav>
+</div>
+<script>
+const KEY='youth-att.v1';
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.members)S={members:[],sessions:{},follow:{},title:'اجتماع الشباب'};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('تعذر الحفظ')}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const AR='٠١٢٣٤٥٦٧٨٩';
+const num=n=>String(n).replace(/\d/g,d=>AR[d]);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function ymd(d){const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())}
+const today=ymd(new Date());
+let tab='att',date=today,q='';
+const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function fmt(s){const d=new Date(s+'T12:00:00');return days[d.getDay()]+' '+num(d.getDate())+' '+months[d.getMonth()]+' '+num(d.getFullYear())}
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
+function intl(p){p=String(p||'').replace(/[^\d+]/g,'');if(!p)return'';if(p.startsWith('+'))return p.slice(1);if(p.startsWith('00'))return p.slice(2);if(p.startsWith('0'))return'2'+p;return p}
+function best(m){return m.phone||m.parent||''}
+function contactBtns(m){const p=best(m);if(!p)return'<span class="sub">لا يوجد رقم</span>';return `<a class="circ" href="tel:${esc(p)}">📞</a><a class="circ wa" href="https://wa.me/${intl(p)}" target="_blank" rel="noopener">💬</a>`}
+function sorted(){return S.members.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar'))}
+function sessionDates(){return Object.keys(S.sessions).filter(d=>Object.keys(S.sessions[d]).length).sort()}
+function missStreak(id){const ds=sessionDates().reverse();let n=0;for(const d of ds){const v=S.sessions[d][id];if(v==='a')n++;else if(v==='p')break;else if(v==='e')continue;else break}return n}
+function lastSeen(id){const ds=sessionDates().reverse();for(const d of ds)if(S.sessions[d][id]==='p')return d;return null}
+
+function render(){
+  $('#hsub').textContent=S.members.length?num(S.members.length)+' مخدوم':'';
+  const tabs=[['att','✅','الحضور'],['mem','👥','المخدومين'],['fu','📞','الافتقاد'],['more','⚙️','المزيد']];
+  $('#nav').innerHTML=tabs.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[1]}</span>${t[2]}</button>`).join('');
+  ({att:vAtt,mem:vMem,fu:vFu,more:vMore})[tab]();
+}
+function go(t){tab=t;q='';render();$('#main').scrollTop=0}
+
+function vAtt(){
+  const ss=S.sessions[date]||{};
+  const list=sorted().filter(m=>m.name.includes(q));
+  let p=0,a=0,e=0;S.members.forEach(m=>{const v=ss[m.id];if(v==='p')p++;else if(v==='a')a++;else if(v==='e')e++});
+  const un=S.members.length-p-a-e;
+  let h=`<div class="card"><label style="margin-top:0">تاريخ الاجتماع</label><input type="date" value="${date}" onchange="date=this.value||today;render()"><div class="sub" style="margin-top:6px">${fmt(date)}</div></div>`;
+  if(!S.members.length)return $('#main').innerHTML=h+`<div class="empty">لسه مفيش مخدومين.<br>روح تبويب «المخدومين» وضيف الأسماء.<br><button class="btn" style="margin-top:14px" onclick="go('mem')">إضافة مخدومين</button></div>`;
+  h+=`<div class="stats"><div><b style="color:#1e8e4e">${num(p)}</b>حاضر</div><div><b style="color:#c0392b">${num(a)}</b>غائب</div><div><b style="color:#d99a1c">${num(e)}</b>معتذر</div><div><b>${num(un)}</b>لم يُسجل</div></div>`;
+  h+=`<input placeholder="🔍 بحث بالاسم" value="${esc(q)}" oninput="q=this.value;vAttList()" style="margin-bottom:10px">`;
+  h+=`<div class="row" style="margin-bottom:10px"><button class="btn green grow" onclick="allP()">الكل حاضر</button><button class="btn sec grow" onclick="shareSum()">إرسال الملخص</button></div><div id="alist"></div>`;
+  $('#main').innerHTML=h;vAttList();
+}
+function vAttList(){
+  const ss=S.sessions[date]||{};
+  const list=sorted().filter(m=>m.name.includes(q));
+  $('#alist').innerHTML=list.map(m=>{const v=ss[m.id];return `<div class="card"><div class="name">${esc(m.name)}</div><div class="seg"><button class="${v==='p'?'p':''}" onclick="mark('${m.id}','p')">حاضر</button><button class="${v==='a'?'a':''}" onclick="mark('${m.id}','a')">غائب</button><button class="${v==='e'?'e':''}" onclick="mark('${m.id}','e')">معتذر</button></div></div>`}).join('')||'<div class="empty">لا نتائج</div>';
+}
+function mark(id,v){const ss=S.sessions[date]=S.sessions[date]||{};if(ss[id]===v)delete ss[id];else ss[id]=v;save();
+  const y=$('#main').scrollTop;vAtt();$('#main').scrollTop=y}
+function allP(){const ss=S.sessions[date]=S.sessions[date]||{};S.members.forEach(m=>{if(!ss[m.id])ss[m.id]='p'});save();vAtt();toast('تم تسجيل الباقي حاضر')}
+function sumText(){const ss=S.sessions[date]||{};const g=v=>sorted().filter(m=>ss[m.id]===v).map(m=>m.name);
+  const P=g('p'),A=g('a'),E=g('e');
+  return `${S.title} - ${fmt(date)}\nحاضر: ${num(P.length)}\nغائب: ${num(A.length)}\nمعتذر: ${num(E.length)}\n\nالغائبين:\n${A.map(n=>'- '+n).join('\n')||'-'}\n\nالمعتذرين:\n${E.map(n=>'- '+n).join('\n')||'-'}`}
+async function shareSum(){const t=sumText();if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(t);toast('تم النسخ')}catch(e){prompt('انسخ الملخص',t)}}
+
+function vMem(){
+  const list=sorted().filter(m=>m.name.includes(q));
+  let h=`<input placeholder="🔍 بحث بالاسم" value="${esc(q)}" oninput="q=this.value;vMemList()" style="margin-bottom:10px"><div id="mlist"></div><button class="fab" onclick="editM()">+</button>`;
+  $('#main').innerHTML=h;vMemList();
+}
+function vMemList(){
+  const list=sorted().filter(m=>m.name.includes(q));
+  $('#mlist').innerHTML=list.map(m=>`<div class="card row" onclick="editM('${m.id}')"><div class="grow"><div class="name">${esc(m.name)}</div><div class="sub">${esc(best(m))||'بدون رقم'}${m.birthday?' · 🎂 '+num(m.birthday.split('-').reverse().join('/')):''}</div></div><span style="font-size:22px;color:#9aa6b5">‹</span></div>`).join('')||`<div class="empty">${S.members.length?'لا نتائج':'اضغط + لإضافة مخدوم<br>أو «إضافة بالجملة» من تبويب المزيد'}</div>`;
+}
+function sheet(html){closeSheet();const d=document.createElement('div');d.className='sheet';d.id='sheet';d.innerHTML='<div>'+html+'</div>';d.addEventListener('click',e=>{if(e.target===d)closeSheet()});document.body.appendChild(d)}
+function closeSheet(){const s=$('#sheet');if(s)s.remove()}
+function editM(id){
+  const m=S.members.find(x=>x.id===id)||{name:'',phone:'',parent:'',birthday:'',notes:''};
+  sheet(`<h3>${id?'بيانات المخدوم':'مخدوم جديد'}</h3>
+  <label>الاسم</label><input id="f_name" value="${esc(m.name)}">
+  <label>رقم التليفون</label><input id="f_phone" type="tel" value="${esc(m.phone)}">
+  <label>رقم ولي الأمر</label><input id="f_parent" type="tel" value="${esc(m.parent)}">
+  <label>تاريخ الميلاد</label><input id="f_bd" type="date" value="${esc(m.birthday)}">
+  <label>ملاحظات</label><textarea id="f_notes">${esc(m.notes)}</textarea>
+  <button class="btn block" onclick="saveM('${id||''}')">حفظ</button>
+  ${id?`<button class="btn red block" onclick="delM('${id}')">حذف</button>`:''}
+  <button class="btn sec block" onclick="closeSheet()">إلغاء</button>`);
+}
+function saveM(id){const name=$('#f_name').value.trim();if(!name){toast('اكتب الاسم');return}
+  const o={name,phone:$('#f_phone').value.trim(),parent:$('#f_parent').value.trim(),birthday:$('#f_bd').value,notes:$('#f_notes').value.trim()};
+  if(id)Object.assign(S.members.find(x=>x.id===id),o);else S.members.push(Object.assign({id:uid()},o));
+  save();closeSheet();render()}
+function delM(id){const m=S.members.find(x=>x.id===id);sheet(`<h3>حذف ${esc(m.name)}؟</h3><div class="sub">هيتمسح من القائمة وسجل الحضور بتاعه.</div><button class="btn red block" onclick="delM2('${id}')">أيوه احذف</button><button class="btn sec block" onclick="closeSheet()">لا</button>`)}
+function delM2(id){S.members=S.members.filter(x=>x.id!==id);Object.values(S.sessions).forEach(s=>delete s[id]);delete S.follow[id];save();closeSheet();render()}
+
+function vFu(){
+  const rows=S.members.map(m=>({m,n:missStreak(m.id),last:lastSeen(m.id),f:(S.follow[m.id]||[]).slice(-1)[0]})).filter(r=>r.n>0).sort((a,b)=>b.n-a.n);
+  let h='';
+  if(!sessionDates().length)h='<div class="empty">سجل الحضور الأول وبعدها هتظهر هنا قائمة الغايبين للافتقاد.</div>';
+  else if(!rows.length)h='<div class="empty">🎉 مفيش غايبين للافتقاد</div>';
+  else h=`<div class="sub" style="margin-bottom:8px">الغايبين في آخر اجتماعات (${num(rows.length)})</div>`+rows.map(r=>`<div class="card"><div class="row"><div class="grow"><div class="name">${esc(r.m.name)}</div><div class="sub"><span class="badge">غاب ${num(r.n)} ${r.n>2?'مرات':r.n==2?'مرتين':'مرة'} ورا بعض</span></div><div class="sub" style="margin-top:4px">${r.last?'آخر حضور: '+fmt(r.last):'لم يحضر من قبل'}</div>${r.f?`<div class="sub">آخر افتقاد: ${fmt(r.f.d)} ${r.f.t?'· '+esc(r.f.t):''}</div>`:''}</div>${contactBtns(r.m)}</div><button class="btn sec block" onclick="fuM('${r.m.id}')">تسجيل افتقاد</button></div>`).join('');
+  $('#main').innerHTML=h;
+}
+function fuM(id){const m=S.members.find(x=>x.id===id);const hist=(S.follow[id]||[]).slice().reverse();
+  sheet(`<h3>افتقاد ${esc(m.name)}</h3><label>ملاحظة (اختياري)</label><textarea id="f_t" placeholder="اتكلمت معاه، ظروفه، ..."></textarea><button class="btn green block" onclick="saveFu('${id}')">تم الافتقاد</button>${hist.length?'<h3 style="margin-top:18px">السجل</h3>'+hist.map(x=>`<div class="card"><div class="sub">${fmt(x.d)}</div>${esc(x.t)||'—'}</div>`).join(''):''}<button class="btn sec block" onclick="closeSheet()">إغلاق</button>`)}
+function saveFu(id){(S.follow[id]=S.follow[id]||[]).push({d:today,t:$('#f_t').value.trim()});save();closeSheet();render();toast('تم التسجيل')}
+
+function vMore(){
+  const ds=sessionDates();
+  const cm=new Date().getMonth()+1;
+  const bd=S.members.filter(m=>m.birthday&&+m.birthday.split('-')[1]===cm).sort((a,b)=>+a.birthday.split('-')[2]-+b.birthday.split('-')[2]);
+  const st=S.members.map(m=>{let p=0,t=0;ds.forEach(d=>{const v=S.sessions[d][m.id];if(v){t++;if(v==='p')p++}});return{m,p,t,pc:t?Math.round(p*100/t):0}}).filter(x=>x.t).sort((a,b)=>b.pc-a.pc);
+  $('#main').innerHTML=`
+  <div class="card"><h3>🎂 أعياد ميلاد الشهر</h3>${bd.map(m=>`<div class="row" style="margin-bottom:8px"><div class="grow name">${esc(m.name)}</div><span class="badge g">${num(m.birthday.split('-')[2])} ${months[cm-1]}</span>${contactBtns(m)}</div>`).join('')||'<div class="sub">لا يوجد</div>'}</div>
+  <div class="card"><h3>📊 نسبة الحضور</h3>${st.map(x=>`<div class="row" style="margin-bottom:6px"><div class="grow">${esc(x.m.name)}</div><b>${num(x.pc)}٪</b><span class="sub">(${num(x.p)}/${num(x.t)})</span></div>`).join('')||'<div class="sub">لسه مفيش اجتماعات مسجلة</div>'}</div>
+  <div class="card"><h3>إدارة</h3>
+  <button class="btn block" onclick="bulk()">إضافة مخدومين بالجملة</button>
+  <button class="btn sec block" onclick="exportD()">نسخة احتياطية (حفظ/إرسال)</button>
+  <button class="btn sec block" onclick="importD()">استرجاع نسخة احتياطية</button>
+  <button class="btn sec block" onclick="rename()">اسم الاجتماع: ${esc(S.title)}</button></div>
+  <div class="sub" style="text-align:center;padding:8px">البيانات محفوظة على تليفونك بس ومش مرفوعة على الإنترنت.</div>`;
+}
+function rename(){sheet(`<h3>اسم الاجتماع</h3><input id="f_t" value="${esc(S.title)}"><button class="btn block" onclick="S.title=$('#f_t').value.trim()||S.title;save();closeSheet();render()">حفظ</button>`)}
+function bulk(){sheet(`<h3>إضافة بالجملة</h3><div class="sub">اكتب كل مخدوم في سطر. تقدر تكتب: الاسم، التليفون، تليفون ولي الأمر، تاريخ الميلاد (2008-05-17)</div><textarea id="f_b" style="min-height:200px" placeholder="مينا جرجس، 01012345678"></textarea><button class="btn block" onclick="bulk2()">إضافة</button><button class="btn sec block" onclick="closeSheet()">إلغاء</button>`)}
+function bulk2(){let n=0;$('#f_b').value.split('\n').forEach(l=>{const p=l.split(/[,،\t]/).map(x=>x.trim());if(!p[0])return;
+  const dig=s=>String(s||'').replace(/[٠-٩]/g,d=>AR.indexOf(d));
+  const bd=(dig(p[3]).match(/^\d{4}-\d{1,2}-\d{1,2}$/)||[''])[0].replace(/-(\d)(?=-|$)/g,'-0$1');
+  S.members.push({id:uid(),name:p[0],phone:dig(p[1]),parent:dig(p[2]),birthday:bd,notes:''});n++});
+  save();closeSheet();toast('تمت إضافة '+num(n));render()}
+function backupText(){return JSON.stringify(S)}
+async function exportD(){const t=backupText();
+  try{const f=new File([t],'youth-attendance-backup.json',{type:'application/json'});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e.name==='AbortError')return}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'application/json'}));a.download='youth-attendance-backup.json';document.body.appendChild(a);a.click();a.remove();toast('تم حفظ الملف')}catch(e){}}
+function importD(){sheet(`<h3>استرجاع نسخة</h3><div class="sub">اختار ملف النسخة الاحتياطية. هيحل محل البيانات الحالية.</div><input id="f_file" type="file" accept=".json,application/json" style="margin-top:10px"><button class="btn block" onclick="importGo()">استرجاع</button><button class="btn sec block" onclick="closeSheet()">إلغاء</button>`)}
+function importGo(){const f=$('#f_file').files[0];if(!f){toast('اختار الملف');return}const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.members)throw 0;S=d;save();closeSheet();render();toast('تم الاسترجاع')}catch(e){toast('الملف غير صالح')}};r.readAsText(f)}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+render();
+</script>
+</body>
+</html>
