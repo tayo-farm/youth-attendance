@@ -3,22 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#1f3a5f">
+<meta name="theme-color" content="#f2c230">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>حضور الشباب</title>
+<title>اجتماع الأنبا موسى</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;touch-action:manipulation;overscroll-behavior:none}
-body{font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;font-size:18px;background:#f3f5f9;color:#14202e}
-#app{display:flex;flex-direction:column;height:100%;max-width:640px;margin:0 auto;background:#f3f5f9}
-header{background:#1f3a5f;color:#fff;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));font-size:22px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
-header small{font-size:14px;font-weight:400;opacity:.85}
+body{font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;font-size:18px;background:#f6ecd6 url(parch.jpg);color:#14202e}
+#app{display:flex;flex-direction:column;height:100%;max-width:640px;margin:0 auto;background:#f6ecd6 url(parch.jpg)}
+header{background:#f2c230;color:#111;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));display:flex;align-items:center;gap:8px;min-height:64px}
+header .t{flex:1;text-align:center;font-family:"Amiri","Noto Naskh Arabic","Droid Arabic Naskh",serif;font-size:21px;font-weight:700;line-height:1.25}
+header .ib{width:44px;height:44px;border:0;background:none;display:flex;align-items:center;justify-content:center;padding:0}
+header svg{width:30px;height:30px;fill:#111}
+.ban{display:block;width:100%;border-radius:16px;margin:0 0 6px;box-shadow:0 2px 8px rgba(0,0,0,.25);height:300px;object-fit:cover}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:6px 4px}
+.tile{border:0;background:none;display:flex;flex-direction:column;align-items:center;padding:8px 2px 10px;font:inherit;color:#14202e}
+.tile img{width:min(40vw,200px);height:min(40vw,200px);object-fit:contain}
+.tile span{font-family:"Amiri","Noto Naskh Arabic","Droid Arabic Naskh",serif;font-size:26px;font-weight:700;margin-top:2px}
+.tile b{font-size:15px;color:#6a7788;font-weight:400}
 main{flex:1;overflow-y:auto;padding:12px 12px 24px}
-nav{display:flex;background:#fff;border-top:1px solid #d5dbe5;padding-bottom:env(safe-area-inset-bottom)}
+nav{display:none}
 nav button{flex:1;border:0;background:none;padding:10px 2px 8px;font:inherit;font-size:14px;color:#6a7788;display:flex;flex-direction:column;align-items:center;gap:2px}
 nav button span{font-size:26px;line-height:1}
 nav button.on{color:#1f3a5f;font-weight:700}
@@ -30,8 +38,8 @@ nav button.on{color:#1f3a5f;font-weight:700}
 input,select,textarea{font:inherit;font-size:18px;width:100%;padding:12px;border:1px solid #c5cdd9;border-radius:10px;background:#fff;color:inherit}
 textarea{min-height:110px}
 label{display:block;font-size:15px;color:#6a7788;margin:10px 0 4px}
-.btn{border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:700;font-size:18px;background:#1f3a5f;color:#fff}
-.btn.sec{background:#e3e9f2;color:#1f3a5f}
+.btn{border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:700;font-size:18px;background:#1c1c1c;color:#f2c230}
+.btn.sec{background:#efe3b8;color:#1c1c1c}
 .btn.red{background:#c0392b}
 .btn.green{background:#1e8e4e}
 .btn.block{display:block;width:100%;margin-top:10px;text-align:center;text-decoration:none}
@@ -47,17 +55,19 @@ label{display:block;font-size:15px;color:#6a7788;margin:10px 0 4px}
 .badge.g{background:#e0f3e8;color:#1e8e4e}
 .circ{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;border:0;background:#e3e9f2}
 .circ.wa{background:#d9f5e3}
-.fab{position:fixed;bottom:calc(86px + env(safe-area-inset-bottom));left:16px;width:62px;height:62px;border-radius:50%;border:0;background:#1f3a5f;color:#fff;font-size:34px;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.fab{color:#f2c230;position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:16px;width:62px;height:62px;border-radius:50%;border:0;background:#1c1c1c;font-size:34px;box-shadow:0 3px 10px rgba(0,0,0,.3)}
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:5}
 .sheet>div{background:#f3f5f9;width:100%;max-width:640px;max-height:92%;overflow-y:auto;border-radius:20px 20px 0 0;padding:16px}
 h3{margin:4px 0 10px;font-size:21px}
 .empty{text-align:center;color:#6a7788;padding:40px 16px}
+#splash{position:fixed;inset:0;background:#e8ec78;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;transition:opacity .5s}#splash img{width:min(80vw,420px);border-radius:50%}#splash div{font-family:"Amiri","Noto Naskh Arabic",serif;font-size:24px;font-weight:700;margin-top:14px;text-align:center;padding:0 16px}
 .toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#14202e;color:#fff;padding:10px 18px;border-radius:20px;font-size:16px;z-index:9}
 </style>
 </head>
 <body>
+<div id="splash"><img src="splash.jpg" alt=""><div>اجتماع الأنبا موسى للشباب<br>كنيسة العذراء</div></div>
 <div id="app">
-<header><div>حضور الشباب <small id="hsub"></small></div></header>
+<header id="hd"></header>
 <main id="main"></main>
 <nav id="nav"></nav>
 </div>
@@ -65,7 +75,8 @@ h3{margin:4px 0 10px;font-size:21px}
 const KEY='youth-att.v1';
 let S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S||!S.members)S={members:[],sessions:{},follow:{},title:'اجتماع الشباب'};
+if(!S||!S.members)S={members:[],sessions:{},follow:{},title:'اجتماع الأنبا موسى للشباب - كنيسة العذراء'};
+if(S.title==='اجتماع الشباب')S.title='اجتماع الأنبا موسى للشباب - كنيسة العذراء';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('تعذر الحفظ')}}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -74,7 +85,7 @@ const num=n=>String(n).replace(/\d/g,d=>AR[d]);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 function ymd(d){const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())}
 const today=ymd(new Date());
-let tab='att',date=today,q='';
+let tab='home',date=today,q='';
 const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 function fmt(s){const d=new Date(s+'T12:00:00');return days[d.getDay()]+' '+num(d.getDate())+' '+months[d.getMonth()]+' '+num(d.getFullYear())}
@@ -87,13 +98,25 @@ function sessionDates(){return Object.keys(S.sessions).filter(d=>Object.keys(S.s
 function missStreak(id){const ds=sessionDates().reverse();let n=0;for(const d of ds){const v=S.sessions[d][id];if(v==='a')n++;else if(v==='p')break;else if(v==='e')continue;else break}return n}
 function lastSeen(id){const ds=sessionDates().reverse();for(const d of ds)if(S.sessions[d][id]==='p')return d;return null}
 
+const HOME='<svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3z"/></svg>';
+const BACK='<svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8-2-2 6-6-6-6z"/></svg>';
+const TITLES={att:'الحضور',mem:'القائمة',fu:'الافتقاد',bd:'أعياد الميلاد',st:'الإحصائيات',adm:'النسخ الاحتياطي والإدارة'};
 function render(){
-  $('#hsub').textContent=S.members.length?num(S.members.length)+' مخدوم':'';
-  const tabs=[['att','✅','الحضور'],['mem','👥','المخدومين'],['fu','📞','الافتقاد'],['more','⚙️','المزيد']];
-  $('#nav').innerHTML=tabs.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[1]}</span>${t[2]}</button>`).join('');
-  ({att:vAtt,mem:vMem,fu:vFu,more:vMore})[tab]();
+  const hd=$('#hd');
+  if(tab==='home'){hd.innerHTML='<span class="ib"></span><div class="t">'+esc(S.title)+'</div><button class="ib" onclick="go(\'home\')">'+HOME+'</button>';}
+  else{hd.innerHTML='<span class="ib"></span><div class="t">'+TITLES[tab]+'</div><button class="ib" onclick="go(\'home\')">'+HOME+'</button>';}
+  $('#nav').innerHTML='';
+  ({home:vHome,att:vAtt,mem:vMem,fu:vFu,bd:vBd,st:vSt,adm:vAdm})[tab]();
 }
 function go(t){tab=t;q='';render();$('#main').scrollTop=0}
+let bi=0;
+function photos(){let a=[];try{a=JSON.parse(localStorage.getItem('youth-att.photos')||'[]')}catch(e){}return ['banner.jpg','group.jpg','church.jpg'].concat(a)}
+function newM(){go('mem');editM()}
+function vHome(){
+  const T=[['att','الحضور',1],['mem','القائمة',2],['new','مخدوم جديد',3],['fu','الافتقاد',4],['bd','أعياد الميلاد',5],['st','الإحصائيات',6],['adm','نسخة احتياطية',7]];
+  let ph=photos();bi=bi%ph.length;
+  $('#main').innerHTML='<img class="ban" id="ban" onclick="bi++;vHome()" src="'+ph[bi]+'" alt=""><div class="tiles">'+T.map(t=>`<button class="tile" onclick="${t[0]==='new'?'newM()':`go('${t[0]}')`}"><img src="tile${t[2]}.webp" alt=""><span>${t[1]}</span></button>`).join('')+'</div>'+(S.members.length?'':'<div class="sub" style="text-align:center;padding:10px">ابدأ بإضافة الشباب من «مخدوم جديد»</div>');
+}
 
 function vAtt(){
   const ss=S.sessions[date]||{};
@@ -101,7 +124,7 @@ function vAtt(){
   let p=0,a=0,e=0;S.members.forEach(m=>{const v=ss[m.id];if(v==='p')p++;else if(v==='a')a++;else if(v==='e')e++});
   const un=S.members.length-p-a-e;
   let h=`<div class="card"><label style="margin-top:0">تاريخ الاجتماع</label><input type="date" value="${date}" onchange="date=this.value||today;render()"><div class="sub" style="margin-top:6px">${fmt(date)}</div></div>`;
-  if(!S.members.length)return $('#main').innerHTML=h+`<div class="empty">لسه مفيش مخدومين.<br>روح تبويب «المخدومين» وضيف الأسماء.<br><button class="btn" style="margin-top:14px" onclick="go('mem')">إضافة مخدومين</button></div>`;
+  if(!S.members.length)return $('#main').innerHTML=h+`<div class="empty">لسه مفيش مخدومين.<br>روح تبويب «المخدومين» وضيف الأسماء.<br><button class="btn" style="margin-top:14px" onclick="newM()">إضافة مخدومين</button></div>`;
   h+=`<div class="stats"><div><b style="color:#1e8e4e">${num(p)}</b>حاضر</div><div><b style="color:#c0392b">${num(a)}</b>غائب</div><div><b style="color:#d99a1c">${num(e)}</b>معتذر</div><div><b>${num(un)}</b>لم يُسجل</div></div>`;
   h+=`<input placeholder="🔍 بحث بالاسم" value="${esc(q)}" oninput="q=this.value;vAttList()" style="margin-bottom:10px">`;
   h+=`<div class="row" style="margin-bottom:10px"><button class="btn green grow" onclick="allP()">الكل حاضر</button><button class="btn sec grow" onclick="shareSum()">إرسال الملخص</button></div><div id="alist"></div>`;
@@ -163,21 +186,30 @@ function fuM(id){const m=S.members.find(x=>x.id===id);const hist=(S.follow[id]||
   sheet(`<h3>افتقاد ${esc(m.name)}</h3><label>ملاحظة (اختياري)</label><textarea id="f_t" placeholder="اتكلمت معاه، ظروفه، ..."></textarea><button class="btn green block" onclick="saveFu('${id}')">تم الافتقاد</button>${hist.length?'<h3 style="margin-top:18px">السجل</h3>'+hist.map(x=>`<div class="card"><div class="sub">${fmt(x.d)}</div>${esc(x.t)||'—'}</div>`).join(''):''}<button class="btn sec block" onclick="closeSheet()">إغلاق</button>`)}
 function saveFu(id){(S.follow[id]=S.follow[id]||[]).push({d:today,t:$('#f_t').value.trim()});save();closeSheet();render();toast('تم التسجيل')}
 
-function vMore(){
-  const ds=sessionDates();
+function vBd(){
   const cm=new Date().getMonth()+1;
   const bd=S.members.filter(m=>m.birthday&&+m.birthday.split('-')[1]===cm).sort((a,b)=>+a.birthday.split('-')[2]-+b.birthday.split('-')[2]);
+  $('#main').innerHTML=`<div class="sub" style="margin-bottom:8px">شهر ${months[cm-1]}</div>`+(bd.map(m=>`<div class="card row"><div class="grow name">${esc(m.name)}</div><span class="badge g">${num(m.birthday.split('-')[2])} ${months[cm-1]}</span>${contactBtns(m)}</div>`).join('')||'<div class="empty">لا توجد أعياد ميلاد هذا الشهر</div>');
+}
+function vSt(){
+  const ds=sessionDates();
   const st=S.members.map(m=>{let p=0,t=0;ds.forEach(d=>{const v=S.sessions[d][m.id];if(v){t++;if(v==='p')p++}});return{m,p,t,pc:t?Math.round(p*100/t):0}}).filter(x=>x.t).sort((a,b)=>b.pc-a.pc);
-  $('#main').innerHTML=`
-  <div class="card"><h3>🎂 أعياد ميلاد الشهر</h3>${bd.map(m=>`<div class="row" style="margin-bottom:8px"><div class="grow name">${esc(m.name)}</div><span class="badge g">${num(m.birthday.split('-')[2])} ${months[cm-1]}</span>${contactBtns(m)}</div>`).join('')||'<div class="sub">لا يوجد</div>'}</div>
-  <div class="card"><h3>📊 نسبة الحضور</h3>${st.map(x=>`<div class="row" style="margin-bottom:6px"><div class="grow">${esc(x.m.name)}</div><b>${num(x.pc)}٪</b><span class="sub">(${num(x.p)}/${num(x.t)})</span></div>`).join('')||'<div class="sub">لسه مفيش اجتماعات مسجلة</div>'}</div>
-  <div class="card"><h3>إدارة</h3>
+  $('#main').innerHTML=`<div class="sub" style="margin-bottom:8px">عدد الاجتماعات المسجلة: ${num(ds.length)}</div>`+(st.map(x=>`<div class="card row"><div class="grow name">${esc(x.m.name)}</div><b>${num(x.pc)}٪</b><span class="sub">(${num(x.p)}/${num(x.t)})</span></div>`).join('')||'<div class="empty">لسه مفيش اجتماعات مسجلة</div>');
+}
+function vAdm(){
+  $('#main').innerHTML=`<div class="card">
   <button class="btn block" onclick="bulk()">إضافة مخدومين بالجملة</button>
   <button class="btn sec block" onclick="exportD()">نسخة احتياطية (حفظ/إرسال)</button>
   <button class="btn sec block" onclick="importD()">استرجاع نسخة احتياطية</button>
+  <button class="btn sec block" onclick="pickBn()">إضافة صورة للواجهة (بتتحفظ على موبايلك بس)</button>
+  <button class="btn sec block" onclick="delBn()">مسح صوري من الواجهة</button>
+  <input id="bnf" type="file" accept="image/*" style="display:none" onchange="bnGo(this)">
   <button class="btn sec block" onclick="rename()">اسم الاجتماع: ${esc(S.title)}</button></div>
   <div class="sub" style="text-align:center;padding:8px">البيانات محفوظة على تليفونك بس ومش مرفوعة على الإنترنت.</div>`;
 }
+function pickBn(){$('#bnf').click()}
+function bnGo(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const W=700,k=Math.min(1,W/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);try{const a=JSON.parse(localStorage.getItem('youth-att.photos')||'[]');a.push(c.toDataURL('image/jpeg',0.65));localStorage.setItem('youth-att.photos',JSON.stringify(a));toast('تمت إضافة الصورة ('+num(a.length)+')')}catch(e){toast('المساحة امتلت، امسح صور')}};im.src=r.result};r.readAsDataURL(f);inp.value=''}
+function delBn(){localStorage.removeItem('youth-att.photos');toast('تم مسح صورك')}
 function rename(){sheet(`<h3>اسم الاجتماع</h3><input id="f_t" value="${esc(S.title)}"><button class="btn block" onclick="S.title=$('#f_t').value.trim()||S.title;save();closeSheet();render()">حفظ</button>`)}
 function bulk(){sheet(`<h3>إضافة بالجملة</h3><div class="sub">اكتب كل مخدوم في سطر. تقدر تكتب: الاسم، التليفون، تليفون ولي الأمر، تاريخ الميلاد (2008-05-17)</div><textarea id="f_b" style="min-height:200px" placeholder="مينا جرجس، 01012345678"></textarea><button class="btn block" onclick="bulk2()">إضافة</button><button class="btn sec block" onclick="closeSheet()">إلغاء</button>`)}
 function bulk2(){let n=0;$('#f_b').value.split('\n').forEach(l=>{const p=l.split(/[,،\t]/).map(x=>x.trim());if(!p[0])return;
@@ -194,6 +226,7 @@ function importD(){sheet(`<h3>استرجاع نسخة</h3><div class="sub">اخ�
 function importGo(){const f=$('#f_file').files[0];if(!f){toast('اختار الملف');return}const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.members)throw 0;S=d;save();closeSheet();render();toast('تم الاسترجاع')}catch(e){toast('الملف غير صالح')}};r.readAsText(f)}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 render();
+setTimeout(()=>{const p=$('#splash');p.style.opacity=0;setTimeout(()=>p.remove(),500)},1600);
 </script>
 </body>
 </html>
